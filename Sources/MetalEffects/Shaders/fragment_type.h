@@ -8,9 +8,13 @@
 #ifndef Header_h
 #define Header_h
 
-struct Fragment {
+struct VertexOut {
     float4 position [[position]];
     float2 uv;
+};
+
+struct FragmentParams {
+    float time;
 };
 
 #endif /* Header_h */

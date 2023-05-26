@@ -11,6 +11,10 @@ enum FragmentFunction: String {
     case default_fragment
 }
 
+struct FragmentParams {
+    let time: Float32
+}
+
 class RenderPipeline {
     let name: String
     let pipelineState: MTLRenderPipelineState
@@ -51,6 +55,10 @@ class RenderPipeline {
         encoder.setRenderPipelineState(pipelineState)
         encoder.setVertexBuffer(vertexBuffer, offset: 0, index: 0)
         encoder.setFragmentTexture(texture, index: 0)
+        
+        var params = FragmentParams(time: Float(Date().timeIntervalSince1970))
+        
+        encoder.setFragmentBytes(&params, length: MemoryLayout<FragmentParams>.stride, index: 0)
         encoder.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: 6)
         encoder.popDebugGroup()
     }

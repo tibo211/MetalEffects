@@ -9,9 +9,9 @@
 #include "fragment_type.h"
 using namespace metal;
 
-vertex Fragment vertex_main(const device float2 *vertex_in [[buffer(0)]], unsigned int vid[[vertex_id]]) {
+vertex VertexOut vertex_main(const device float2 *vertex_in [[buffer(0)]], unsigned int vid[[vertex_id]]) {
     float2 v = vertex_in[vid];
-    Fragment out;
+    VertexOut out;
     out.position = float4(v.x, v.y, 0, 1);
     // Update the positions to 0...1 from -1...1.
     float2 uv = (v + 1) / 2;

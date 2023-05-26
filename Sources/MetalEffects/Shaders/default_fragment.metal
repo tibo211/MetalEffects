@@ -11,7 +11,7 @@ using namespace metal;
 
 constexpr sampler textureSampler;
 
-fragment float4 default_fragment(Fragment in [[stage_in]], texture2d<float> texture_in [[texture(0)]]) {
-    float3 color = texture_in.sample(textureSampler, in.uv).rgb;
+fragment float4 default_fragment(constant FragmentParams &params [[buffer(0)]], VertexOut in [[stage_in]], texture2d<float> texture_in [[texture(0)]]) {
+    float3 color = texture_in.sample(textureSampler, in.uv).rgb * abs(sin(params.time));
     return float4(color, 1);
 }
