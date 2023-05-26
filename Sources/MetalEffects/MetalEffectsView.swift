@@ -13,7 +13,7 @@ public struct MetalEffectView<Content: View>: View {
     let helper: RenderHelper?
     
     @MainActor
-    init(@ViewBuilder content: () -> Content) {
+    public init(@ViewBuilder content: () -> Content) {
         let view = content()
         self.content = view
         do {
