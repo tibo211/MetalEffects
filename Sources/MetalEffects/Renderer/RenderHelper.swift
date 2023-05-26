@@ -88,7 +88,7 @@ final class RenderHelper {
                         withBytes: pixelData!,
                         bytesPerRow: image.bytesPerRow)
         
-        renderPipeline = try .create(device: RenderHelper.device, function: .default_fragment)
+        renderPipeline = try .create(device: RenderHelper.device, function: .flame_fragment)
         
         self.texture = texture
     }

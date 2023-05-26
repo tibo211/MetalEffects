@@ -38,12 +38,16 @@ public struct MetalEffectView<Content: View>: View {
 struct MetalEffectsView_Previews: PreviewProvider {
     static var previews: some View {
         MetalEffectView {
-            Text("Rendered in metal")
-                .font(.title.bold())
-                .foregroundColor(.white)
-                .padding()
-                .background(Color.blue.gradient)
-                .cornerRadius(12)
+            ZStack {
+                Rectangle().fill(.blue.gradient)
+                
+                Text("Rendered in metal")
+                    .font(.title.bold())
+                    .foregroundColor(.white)
+                    .padding()
+                    .cornerRadius(12)
+            }
+            .frame(width: 400, height: 300)
         }
     }
 }

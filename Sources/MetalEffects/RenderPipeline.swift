@@ -9,6 +9,7 @@ import MetalKit
 
 enum FragmentFunction: String {
     case default_fragment
+    case flame_fragment
 }
 
 struct FragmentParams {
