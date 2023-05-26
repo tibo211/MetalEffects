@@ -6,12 +6,8 @@
 //
 
 #include <metal_stdlib>
+#include "fragment_type.h"
 using namespace metal;
-
-struct Fragment {
-    float4 position [[position]];
-    float2 uv;
-};
 
 vertex Fragment vertex_main(const device float2 *vertex_in [[buffer(0)]], unsigned int vid[[vertex_id]]) {
     float2 v = vertex_in[vid];

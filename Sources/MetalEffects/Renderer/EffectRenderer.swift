@@ -22,8 +22,8 @@ class EffectRenderer: NSObject, MTKViewDelegate {
               let encoder = commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor) else {
             return
         }
-        
-        // TODO: Encode render pipeline.
+        print("encode")
+        renderHelper.renderPipeline.encode(with: encoder, texture: renderHelper.texture)
         
         encoder.endEncoding()
         

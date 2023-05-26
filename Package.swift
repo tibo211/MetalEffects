@@ -24,7 +24,8 @@ let package = Package(
             name: "MetalEffects",
             dependencies: [],
             resources: [
-                .process("Shaders/vertex_main.metal")
+                .process("Shaders/vertex_main.metal"),
+                .process("Shaders/default_fragment.metal")
             ]),
         .testTarget(
             name: "MetalEffectsTests",

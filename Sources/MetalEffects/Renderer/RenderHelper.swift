@@ -32,10 +32,11 @@ extension MetalEffectsErrorType: LocalizedError {
 
 final class RenderHelper {
     private static var device: MTLDevice!
-    private static var library: MTLLibrary!
-    private static var vertexFunction: MTLFunction!
+    private(set) static var library: MTLLibrary!
+    private(set) static var vertexFunction: MTLFunction!
     
     let commandQueue: MTLCommandQueue
+    let renderPipeline: RenderPipeline
     
     let texture: MTLTexture
     let size: CGSize
@@ -86,6 +87,8 @@ final class RenderHelper {
                         mipmapLevel: 0,
                         withBytes: pixelData!,
                         bytesPerRow: image.bytesPerRow)
+        
+        renderPipeline = try .create(device: RenderHelper.device, function: .default_fragment)
         
         self.texture = texture
     }
