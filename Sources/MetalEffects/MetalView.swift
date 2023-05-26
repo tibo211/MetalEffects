@@ -15,7 +15,7 @@ extension MTKView {
         view.delegate = renderer
         view.clearColor = MTLClearColor(red: 1, green: 0, blue: 1, alpha: 1)
         view.preferredFramesPerSecond = 60
-        view.framebufferOnly = false
+        view.framebufferOnly = true
         view.isPaused = false
         view.enableSetNeedsDisplay = true
         return view

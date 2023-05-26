@@ -14,7 +14,9 @@ class EffectRenderer: NSObject, MTKViewDelegate {
         renderHelper = helper
     }
     
-    func mtkView(_ view: MTKView, drawableSizeWillChange size: CGSize) {}
+    func mtkView(_ view: MTKView, drawableSizeWillChange size: CGSize) {
+        view.isPaused = false
+    }
 
     func draw(in view: MTKView) {
         guard let commandBuffer = renderHelper.commandQueue.makeCommandBuffer(),
@@ -22,7 +24,6 @@ class EffectRenderer: NSObject, MTKViewDelegate {
               let encoder = commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor) else {
             return
         }
-        print("encode")
         renderHelper.renderPipeline.encode(with: encoder, texture: renderHelper.texture)
         
         encoder.endEncoding()

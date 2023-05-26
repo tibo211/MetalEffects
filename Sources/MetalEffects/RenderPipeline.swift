@@ -20,6 +20,8 @@ class RenderPipeline {
     let pipelineState: MTLRenderPipelineState
     let vertexBuffer: MTLBuffer
     
+    let initialTime = CFAbsoluteTimeGetCurrent()
+    
     init(device: MTLDevice, pipelineState: MTLRenderPipelineState, name: String) {
         self.name = name
         self.pipelineState = pipelineState
@@ -56,8 +58,7 @@ class RenderPipeline {
         encoder.setVertexBuffer(vertexBuffer, offset: 0, index: 0)
         encoder.setFragmentTexture(texture, index: 0)
         
-        var params = FragmentParams(time: Float(Date().timeIntervalSince1970))
-        print("render: \(params.time)")
+        var params = FragmentParams(time: Float(CFAbsoluteTimeGetCurrent() - initialTime))
         
         encoder.setFragmentBytes(&params, length: MemoryLayout<FragmentParams>.stride, index: 0)
         encoder.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: 6)
