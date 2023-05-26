@@ -12,6 +12,7 @@ public enum MetalEffectsErrorType: Error {
     case createDeviceFailed
     case renderingImageFailed
     case makeTextureFailed
+    case makeCommandQueueFailed
 }
 
 extension MetalEffectsErrorType: LocalizedError {
@@ -23,6 +24,8 @@ extension MetalEffectsErrorType: LocalizedError {
             return "Rendering image failed."
         case .makeTextureFailed:
             return "Creating texture failed."
+        case .makeCommandQueueFailed:
+            return "Make command queue failed."
         }
     }
 }
@@ -32,9 +35,13 @@ final class RenderHelper {
     private static var library: MTLLibrary!
     private static var vertexFunction: MTLFunction!
     
+    let commandQueue: MTLCommandQueue
+    
     let texture: MTLTexture
     let size: CGSize
     
+    var device: MTLDevice { RenderHelper.device }
+
     @MainActor
     init<Content: View>(content: Content) throws {
         if RenderHelper.device == nil {
@@ -45,6 +52,12 @@ final class RenderHelper {
             RenderHelper.library = try device.makeDefaultLibrary(bundle: .module)
             RenderHelper.vertexFunction = RenderHelper.library.makeFunction(name: "vertex_main")
         }
+        
+        guard let commandQueue = RenderHelper.device.makeCommandQueue() else {
+            throw MetalEffectsErrorType.makeCommandQueueFailed
+        }
+        
+        self.commandQueue = commandQueue
 
         let renderer = ImageRenderer(content: content)
         renderer.scale = 3

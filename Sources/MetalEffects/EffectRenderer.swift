@@ -15,5 +15,20 @@ class EffectRenderer: NSObject, MTKViewDelegate {
     }
     
     func mtkView(_ view: MTKView, drawableSizeWillChange size: CGSize) {}
-    func draw(in view: MTKView) {}
+
+    func draw(in view: MTKView) {
+        guard let commandBuffer = renderHelper.commandQueue.makeCommandBuffer(),
+              let renderPassDescriptor = view.currentRenderPassDescriptor,
+              let encoder = commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor) else {
+            return
+        }
+        
+        // TODO: Encode render pipeline.
+        
+        encoder.endEncoding()
+        
+        guard let drawable = view.currentDrawable else { return }
+        commandBuffer.present(drawable)
+        commandBuffer.commit()
+    }
 }

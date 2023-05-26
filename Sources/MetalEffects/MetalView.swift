@@ -11,9 +11,9 @@ import MetalKit
 extension MTKView {
     static func make(renderer: EffectRenderer) -> MTKView {
         let view = MTKView()
-        view.device = MTLCreateSystemDefaultDevice()
+        view.device = renderer.renderHelper.device
+        view.delegate = renderer
         view.clearColor = MTLClearColor(red: 1, green: 0, blue: 1, alpha: 1)
-        view.device = MTLCreateSystemDefaultDevice()
         view.preferredFramesPerSecond = 60
         view.enableSetNeedsDisplay = true
         return view
