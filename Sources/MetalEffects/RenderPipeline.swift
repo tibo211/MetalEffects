@@ -57,6 +57,7 @@ class RenderPipeline {
         encoder.setFragmentTexture(texture, index: 0)
         
         var params = FragmentParams(time: Float(Date().timeIntervalSince1970))
+        print("render: \(params.time)")
         
         encoder.setFragmentBytes(&params, length: MemoryLayout<FragmentParams>.stride, index: 0)
         encoder.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: 6)
