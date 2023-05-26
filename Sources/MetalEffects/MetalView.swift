@@ -22,6 +22,8 @@ extension MTKView {
 
 #if os(macOS)
 struct MetalView: NSViewRepresentable {
+    let renderHelper: RenderHelper
+    
     func makeNSView(context: Context) -> MTKView {
         .make(renderer: context.coordinator)
     }
@@ -29,11 +31,13 @@ struct MetalView: NSViewRepresentable {
     func updateNSView(_ nsView: MTKView, context: Context) {}
     
     func makeCoordinator() -> EffectRenderer {
-        EffectRenderer()
+        EffectRenderer(helper: renderHelper)
     }
 }
 #else
 struct MetalView: UIViewRepresentable {
+    let renderHelper: RenderHelper
+    
     func makeUIView(context: Context) -> MTKView {
         .make(renderer: context.coordinator)
     }
@@ -41,13 +45,7 @@ struct MetalView: UIViewRepresentable {
     func updateUIView(_ view: MTKView, context: Context) {}
     
     func makeCoordinator() -> EffectRenderer {
-        EffectRenderer()
+        EffectRenderer(helper: renderHelper)
     }
 }
 #endif
-
-struct MetalView_Previews: PreviewProvider {
-    static var previews: some View {
-        MetalView()
-    }
-}

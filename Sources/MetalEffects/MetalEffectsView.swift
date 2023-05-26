@@ -8,24 +8,30 @@
 import SwiftUI
 
 public struct MetalEffectView<Content: View>: View {
-    @ViewBuilder public let content: () -> Content
+    let content: Content
+
+    let helper: RenderHelper?
     
-    @State private var image: CGImage?
-    
-    public var body: some View {
-        Group {
-            content()
-                .onAppear {
-                    createImage()
-                }
+    @MainActor
+    init(@ViewBuilder content: () -> Content) {
+        let view = content()
+        self.content = view
+        do {
+            helper = try RenderHelper(content: view)
+        } catch {
+            print(error.localizedDescription)
+            helper = nil
         }
     }
     
-    @MainActor
-    private func createImage() {
-        let renderer = ImageRenderer(content: content())
-        renderer.scale = 3
-        image = renderer.cgImage
+    public var body: some View {
+        if let helper {
+            MetalView(renderHelper: helper)
+                .frame(width: helper.size.width,
+                       height: helper.size.height)
+        } else {
+            content
+        }
     }
 }
 

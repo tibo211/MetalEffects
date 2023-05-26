@@ -8,7 +8,12 @@
 import MetalKit
 
 class EffectRenderer: NSObject, MTKViewDelegate {
-    func mtkView(_ view: MTKView, drawableSizeWillChange size: CGSize) {}
+    let renderHelper: RenderHelper
     
+    init(helper: RenderHelper) {
+        renderHelper = helper
+    }
+    
+    func mtkView(_ view: MTKView, drawableSizeWillChange size: CGSize) {}
     func draw(in view: MTKView) {}
 }
