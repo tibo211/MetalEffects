@@ -37,7 +37,7 @@ public struct MetalEffectView<Content: View>: View {
 
 struct MetalEffectsView_Previews: PreviewProvider {
     static var previews: some View {
-        Grid(horizontalSpacing: 0) {
+        Grid(horizontalSpacing: 0, verticalSpacing: 0) {
             GridRow {
                 MetalEffectView(.water_fragment) {
                     ZStack {
@@ -63,6 +63,17 @@ struct MetalEffectsView_Previews: PreviewProvider {
             }
             GridRow {
                 MetalEffectView(.distorted_fade) {
+                    ZStack {
+                        Rectangle().fill(.blue.gradient)
+                        
+                        Text("Rendered in metal")
+                            .font(.title.bold())
+                            .foregroundColor(.white)
+                    }
+                    .frame(width: 200, height: 200)
+                }
+                
+                MetalEffectView(.wave_fragment) {
                     ZStack {
                         Rectangle().fill(.blue.gradient)
                         
