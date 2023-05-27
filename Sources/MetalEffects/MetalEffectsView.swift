@@ -61,6 +61,18 @@ struct MetalEffectsView_Previews: PreviewProvider {
                     .frame(width: 200, height: 200)
                 }
             }
+            GridRow {
+                MetalEffectView(.distorted_fade) {
+                    ZStack {
+                        Rectangle().fill(.blue.gradient)
+                        
+                        Text("Rendered in metal")
+                            .font(.title.bold())
+                            .foregroundColor(.white)
+                    }
+                    .frame(width: 200, height: 200)
+                }
+            }
         }
         
     }
