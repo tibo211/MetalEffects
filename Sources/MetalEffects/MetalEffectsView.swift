@@ -13,11 +13,11 @@ public struct MetalEffectView<Content: View>: View {
     let helper: RenderHelper?
     
     @MainActor
-    public init(@ViewBuilder content: () -> Content) {
+    public init(_ function: FragmentFunction, @ViewBuilder content: () -> Content) {
         let view = content()
         self.content = view
         do {
-            helper = try RenderHelper(content: view)
+            helper = try RenderHelper(content: view, function: function)
         } catch {
             print(error.localizedDescription)
             helper = nil
@@ -37,17 +37,31 @@ public struct MetalEffectView<Content: View>: View {
 
 struct MetalEffectsView_Previews: PreviewProvider {
     static var previews: some View {
-        MetalEffectView {
-            ZStack {
-                Rectangle().fill(.blue.gradient)
+        Grid(horizontalSpacing: 0) {
+            GridRow {
+                MetalEffectView(.water_fragment) {
+                    ZStack {
+                        Rectangle().fill(.blue.gradient)
+                        
+                        Text("Rendered in metal")
+                            .font(.title.bold())
+                            .foregroundColor(.white)
+                    }
+                    .frame(width: 200, height: 200)
+                }
                 
-                Text("Rendered in metal")
-                    .font(.title.bold())
-                    .foregroundColor(.white)
-                    .padding()
-                    .cornerRadius(12)
+                MetalEffectView(.flame_fragment) {
+                    ZStack {
+                        Rectangle().fill(.blue.gradient)
+                        
+                        Text("Rendered in metal")
+                            .font(.title.bold())
+                            .foregroundColor(.white)
+                    }
+                    .frame(width: 200, height: 200)
+                }
             }
-            .frame(width: 400, height: 300)
         }
+        
     }
 }

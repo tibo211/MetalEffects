@@ -7,9 +7,10 @@
 
 import MetalKit
 
-enum FragmentFunction: String {
+public enum FragmentFunction: String {
     case default_fragment
     case flame_fragment
+    case water_fragment
 }
 
 struct FragmentParams {

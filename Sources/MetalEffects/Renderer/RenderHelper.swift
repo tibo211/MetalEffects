@@ -44,7 +44,7 @@ final class RenderHelper {
     var device: MTLDevice { RenderHelper.device }
 
     @MainActor
-    init<Content: View>(content: Content) throws {
+    init<Content: View>(content: Content, function: FragmentFunction) throws {
         if RenderHelper.device == nil {
             guard let device = MTLCreateSystemDefaultDevice() else {
                 throw MetalEffectsErrorType.createDeviceFailed
@@ -88,7 +88,7 @@ final class RenderHelper {
                         withBytes: pixelData!,
                         bytesPerRow: image.bytesPerRow)
         
-        renderPipeline = try .create(device: RenderHelper.device, function: .flame_fragment)
+        renderPipeline = try .create(device: RenderHelper.device, function: function)
         
         self.texture = texture
     }
