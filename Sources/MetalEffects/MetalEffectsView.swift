@@ -36,52 +36,38 @@ public struct MetalEffectView<Content: View>: View {
 }
 
 struct MetalEffectsView_Previews: PreviewProvider {
+    struct ExampleView: View {
+        var body: some View {
+            ZStack {
+                Rectangle().fill(.blue.gradient)
+                
+                Text("Rendered in metal")
+                    .font(.title.bold())
+                    .foregroundColor(.white)
+            }
+            .frame(width: 200, height: 200)
+        }
+    }
+    
+    
     static var previews: some View {
         Grid(horizontalSpacing: 0, verticalSpacing: 0) {
             GridRow {
                 MetalEffectView(.water_fragment) {
-                    ZStack {
-                        Rectangle().fill(.blue.gradient)
-                        
-                        Text("Rendered in metal")
-                            .font(.title.bold())
-                            .foregroundColor(.white)
-                    }
-                    .frame(width: 200, height: 200)
+                    ExampleView()
                 }
                 
                 MetalEffectView(.flame_fragment) {
-                    ZStack {
-                        Rectangle().fill(.blue.gradient)
-                        
-                        Text("Rendered in metal")
-                            .font(.title.bold())
-                            .foregroundColor(.white)
-                    }
-                    .frame(width: 200, height: 200)
+                    ExampleView()
                 }
             }
             GridRow {
                 MetalEffectView(.distorted_fade) {
-                    ZStack {
-                        Rectangle().fill(.blue.gradient)
-                        
-                        Text("Rendered in metal")
-                            .font(.title.bold())
-                            .foregroundColor(.white)
-                    }
-                    .frame(width: 200, height: 200)
+                    ExampleView()
                 }
                 
                 MetalEffectView(.wave_fragment) {
-                    ZStack {
-                        Rectangle().fill(.blue.gradient)
-                        
-                        Text("Rendered in metal")
-                            .font(.title.bold())
-                            .foregroundColor(.white)
-                    }
-                    .frame(width: 200, height: 200)
+                    ExampleView()
                 }
             }
         }
