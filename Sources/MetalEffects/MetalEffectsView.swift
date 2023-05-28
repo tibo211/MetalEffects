@@ -62,7 +62,7 @@ struct MetalEffectsView_Previews: PreviewProvider {
                 }
             }
             GridRow {
-                MetalEffectView(.distorted_fade) {
+                MetalEffectView(.linear_dissolve) {
                     ExampleView()
                 }
                 

@@ -13,6 +13,7 @@ public enum FragmentFunction: String {
     case water_fragment
     case distorted_fade
     case wave_fragment
+    case linear_dissolve
 }
 
 struct FragmentParams {
