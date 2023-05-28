@@ -38,13 +38,13 @@ final class RenderHelper {
     let commandQueue: MTLCommandQueue
     let renderPipeline: RenderPipeline
     
-    let texture: MTLTexture
-    let size: CGSize
+    private(set) var texture: MTLTexture?
+    private(set) var size: CGSize?
     
     var device: MTLDevice { RenderHelper.device }
 
     @MainActor
-    init<Content: View>(content: Content, function: FragmentFunction) throws {
+    init(function: FragmentFunction) throws {
         if RenderHelper.device == nil {
             guard let device = MTLCreateSystemDefaultDevice() else {
                 throw MetalEffectsErrorType.createDeviceFailed
@@ -59,27 +59,27 @@ final class RenderHelper {
         }
         
         self.commandQueue = commandQueue
-
-        let renderer = ImageRenderer(content: content)
-        renderer.scale = 3
-        guard let image = renderer.cgImage else {
-            throw MetalEffectsErrorType.renderingImageFailed
-        }
         
+        renderPipeline = try .create(device: RenderHelper.device, function: function)
+    }
+    
+    func updateTexture(from image: CGImage) throws {
         size = CGSize(width: image.width / 3, height: image.height / 3)
         
-        let texDescriptor = MTLTextureDescriptor.texture2DDescriptor(
+        // Create texture.
+        let textureDescriptor = MTLTextureDescriptor.texture2DDescriptor(
             pixelFormat: .rgba8Unorm,
             width: image.width,
             height: image.height,
             mipmapped: false
         )
         
-        guard let texture = RenderHelper.device.makeTexture(descriptor: texDescriptor),
+        guard let texture = RenderHelper.device.makeTexture(descriptor: textureDescriptor),
               let cfData: CFData = image.dataProvider?.data else {
             throw MetalEffectsErrorType.makeTextureFailed
         }
         
+        // Copy pixel data to the texture.
         let pixelData = CFDataGetBytePtr(cfData)
         
         let region = MTLRegionMake2D(0, 0, image.width, image.height)
@@ -87,8 +87,6 @@ final class RenderHelper {
                         mipmapLevel: 0,
                         withBytes: pixelData!,
                         bytesPerRow: image.bytesPerRow)
-        
-        renderPipeline = try .create(device: RenderHelper.device, function: function)
         
         self.texture = texture
     }

@@ -9,28 +9,46 @@ import SwiftUI
 
 public struct MetalEffectView<Content: View>: View {
     let content: Content
-
     let helper: RenderHelper?
+    
+    @ObservedObject private var imageRenderer: ImageRenderer<Content>
     
     @MainActor
     public init(_ function: FragmentFunction, @ViewBuilder content: () -> Content) {
         let view = content()
         self.content = view
+        imageRenderer = ImageRenderer(content: view)
         do {
-            helper = try RenderHelper(content: view, function: function)
+            helper = try RenderHelper(function: function)
         } catch {
             print(error.localizedDescription)
             helper = nil
         }
+        renderImage()
     }
     
     public var body: some View {
-        if let helper {
-            MetalView(renderHelper: helper)
-                .frame(width: helper.size.width,
-                       height: helper.size.height)
-        } else {
-            content
+        Group {
+            if let helper, let size = helper.size {
+                MetalView(renderHelper: helper)
+                    .frame(width: size.width,
+                           height: size.height)
+            } else {
+                content
+            }
+        }
+        .onReceive(imageRenderer.objectWillChange) {
+            renderImage()
+        }
+    }
+    
+    private func renderImage() {
+        if let image = imageRenderer.cgImage {
+            do {
+                try helper?.updateTexture(from: image)
+            } catch {
+                print(error.localizedDescription)
+            }
         }
     }
 }
