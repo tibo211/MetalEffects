@@ -63,7 +63,13 @@ struct MetalEffectsView_Previews: PreviewProvider {
             }
             GridRow {
                 MetalEffectView(.linear_dissolve) {
-                    ExampleView()
+                    VStack {
+                        Text("TEXT")
+                        Text("TO")
+                        Text("DISSOLVE")
+                    }
+                    .font(.largeTitle.bold())
+                    .foregroundColor(.white)
                 }
                 
                 MetalEffectView(.wave_fragment) {
@@ -71,6 +77,5 @@ struct MetalEffectsView_Previews: PreviewProvider {
                 }
             }
         }
-        
     }
 }

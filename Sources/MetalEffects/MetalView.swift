@@ -17,6 +17,7 @@ extension MTKView {
         view.preferredFramesPerSecond = 60
         view.framebufferOnly = true
         view.isPaused = false
+        view.layer?.isOpaque = false
         view.enableSetNeedsDisplay = true
         return view
     }
