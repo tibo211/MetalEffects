@@ -17,7 +17,11 @@ public struct MetalEffectView<Content: View>: View {
     public init(_ function: FragmentFunction, @ViewBuilder content: () -> Content) {
         let view = content()
         self.content = view
-        imageRenderer = ImageRenderer(content: view)
+
+        let imageRenderer = ImageRenderer(content: view)
+        imageRenderer.scale = 3
+        self.imageRenderer = imageRenderer
+
         do {
             helper = try RenderHelper(function: function)
         } catch {
