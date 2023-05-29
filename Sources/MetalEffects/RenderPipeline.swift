@@ -27,22 +27,10 @@ class RenderPipeline {
     
     let initialTime = CFAbsoluteTimeGetCurrent()
     
-    init(device: MTLDevice, pipelineState: MTLRenderPipelineState, name: String) {
+    init(device: MTLDevice, pipelineState: MTLRenderPipelineState, name: String) throws {
         self.name = name
         self.pipelineState = pipelineState
-
-        let vertices: [vector_float2] = [
-            [-1, -1],
-            [1, -1],
-            [1, 1],
-            
-            [-1, -1],
-            [1, 1],
-            [-1, 1]
-        ]
-        
-        vertexBuffer = device
-            .makeBuffer(bytes: vertices, length: vertices.count * MemoryLayout<vector_float2>.stride)!
+        vertexBuffer = try device.quadVertexBuffer()
     }
     
     static func create(device: MTLDevice, library: MTLLibrary! = RenderHelper.library, function: FragmentFunction) throws -> RenderPipeline {
@@ -54,7 +42,7 @@ class RenderPipeline {
         
         let state = try device.makeRenderPipelineState(descriptor: pipelineDescriptor)
         
-        return RenderPipeline(device: device, pipelineState: state, name: function.rawValue)
+        return try RenderPipeline(device: device, pipelineState: state, name: function.rawValue)
     }
     
     func encode(with encoder: MTLRenderCommandEncoder, texture: MTLTexture) {

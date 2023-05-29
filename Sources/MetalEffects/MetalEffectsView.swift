@@ -8,17 +8,12 @@
 import SwiftUI
 
 public struct MetalEffectView<Content: View>: View {
-    let content: Content
     let helper: RenderHelper?
     
     @ObservedObject private var imageRenderer: ImageRenderer<Content>
     
-    @MainActor
     public init(_ function: FragmentFunction, @ViewBuilder content: () -> Content) {
-        let view = content()
-        self.content = view
-
-        let imageRenderer = ImageRenderer(content: view)
+        let imageRenderer = ImageRenderer(content: content())
         imageRenderer.scale = 3
         self.imageRenderer = imageRenderer
 
@@ -28,6 +23,7 @@ public struct MetalEffectView<Content: View>: View {
             print(error.localizedDescription)
             helper = nil
         }
+
         renderImage()
     }
     
@@ -38,7 +34,7 @@ public struct MetalEffectView<Content: View>: View {
                     .frame(width: size.width,
                            height: size.height)
             } else {
-                content
+                imageRenderer.content
             }
         }
         .onReceive(imageRenderer.objectWillChange) {
@@ -99,5 +95,6 @@ struct MetalEffectsView_Previews: PreviewProvider {
                 }
             }
         }
+        .background(.black)
     }
 }

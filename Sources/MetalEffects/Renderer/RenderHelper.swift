@@ -10,6 +10,7 @@ import SwiftUI
 
 public enum MetalEffectsErrorType: Error {
     case createDeviceFailed
+    case createVertexBufferFailed
     case renderingImageFailed
     case makeTextureFailed
     case makeCommandQueueFailed
@@ -26,6 +27,8 @@ extension MetalEffectsErrorType: LocalizedError {
             return "Creating texture failed."
         case .makeCommandQueueFailed:
             return "Make command queue failed."
+        case .createVertexBufferFailed:
+            return "Create vertex buffer failed."
         }
     }
 }
