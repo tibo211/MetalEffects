@@ -14,21 +14,24 @@ public enum MetalEffectsErrorType: Error {
     case renderingImageFailed
     case makeTextureFailed
     case makeCommandQueueFailed
+    case makeFunctionFailed(String)
 }
 
 extension MetalEffectsErrorType: LocalizedError {
     public var errorDescription: String? {
         switch self {
         case .createDeviceFailed:
-            return "Unable to get system default gpu."
+            return "Unable to get system default gpu"
         case .renderingImageFailed:
-            return "Rendering image failed."
+            return "Rendering image failed"
         case .makeTextureFailed:
-            return "Creating texture failed."
+            return "Creating texture failed"
         case .makeCommandQueueFailed:
-            return "Make command queue failed."
+            return "Make command queue failed"
         case .createVertexBufferFailed:
-            return "Create vertex buffer failed."
+            return "Create vertex buffer failed"
+        case let .makeFunctionFailed(name):
+            return "Failed to make function: \(name)"
         }
     }
 }

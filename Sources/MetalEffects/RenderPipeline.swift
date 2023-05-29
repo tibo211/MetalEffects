@@ -21,28 +21,33 @@ struct FragmentParams {
 }
 
 class RenderPipeline {
-    let name: String
-    let pipelineState: MTLRenderPipelineState
-    let vertexBuffer: MTLBuffer
-    
-    let initialTime = CFAbsoluteTimeGetCurrent()
-    
-    init(device: MTLDevice, pipelineState: MTLRenderPipelineState, name: String) throws {
-        self.name = name
-        self.pipelineState = pipelineState
+    private let pipelineState: MTLRenderPipelineState
+    private let vertexBuffer: MTLBuffer
+    private let initialTime = CFAbsoluteTimeGetCurrent()
+    private let name: String
+
+    init(device: MTLDevice, fragmentFunction: MTLFunction) throws {
+        name = fragmentFunction.name
+        
+        // Create pipeline state.
+        let pipelineDescriptor = MTLRenderPipelineDescriptor()
+        pipelineDescriptor.colorAttachments[0].pixelFormat = .bgra8Unorm
+        pipelineDescriptor.vertexFunction = RenderHelper.vertexFunction
+        pipelineDescriptor.fragmentFunction = fragmentFunction
+        
+        pipelineState = try device
+            .makeRenderPipelineState(descriptor: pipelineDescriptor)
+
         vertexBuffer = try device.quadVertexBuffer()
     }
     
     static func create(device: MTLDevice, library: MTLLibrary! = RenderHelper.library, function: FragmentFunction) throws -> RenderPipeline {
         
-        let pipelineDescriptor = MTLRenderPipelineDescriptor()
-        pipelineDescriptor.colorAttachments[0].pixelFormat = .bgra8Unorm
-        pipelineDescriptor.vertexFunction = RenderHelper.vertexFunction
-        pipelineDescriptor.fragmentFunction = library.makeFunction(name: function.rawValue)
+        guard let fragmentFunction = library.makeFunction(name: function.rawValue) else {
+            throw MetalEffectsErrorType.makeFunctionFailed(function.rawValue)
+        }
         
-        let state = try device.makeRenderPipelineState(descriptor: pipelineDescriptor)
-        
-        return try RenderPipeline(device: device, pipelineState: state, name: function.rawValue)
+        return try RenderPipeline(device: device, fragmentFunction: fragmentFunction)
     }
     
     func encode(with encoder: MTLRenderCommandEncoder, texture: MTLTexture) {
