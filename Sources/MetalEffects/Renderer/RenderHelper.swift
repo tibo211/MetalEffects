@@ -48,9 +48,8 @@ final class RenderHelper {
     private(set) var size: CGSize?
     
     var device: MTLDevice { RenderHelper.device }
-
-    @MainActor
-    init(function: FragmentFunction) throws {
+    
+    init(parameters: EffectParameters) throws {
         if RenderHelper.device == nil {
             guard let device = MTLCreateSystemDefaultDevice() else {
                 throw MetalEffectsErrorType.createDeviceFailed
@@ -66,16 +65,7 @@ final class RenderHelper {
         
         self.commandQueue = commandQueue
         
-        if function == .noise_dissolve {
-            let url = Bundle.module.url(forResource: "noise", withExtension: "png")!
-            let texture = try MTKTextureLoader(device: RenderHelper.device)
-                .newTexture(URL: url)
-            
-            renderPipeline = try .create(device: RenderHelper.device, function: function, textures: [texture])
-        } else {
-            renderPipeline = try .create(device: RenderHelper.device, function: function)
-        }
-        
+        renderPipeline = try .create(device: RenderHelper.device, parameters: parameters)
     }
     
     func updateTexture(from image: CGImage) throws {

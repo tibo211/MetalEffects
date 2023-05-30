@@ -44,6 +44,15 @@ class RenderPipeline {
         self.textures = textures
     }
     
+    static func create(device: MTLDevice, parameters: EffectParameters) throws -> RenderPipeline {
+        let library = parameters.library ?? RenderHelper.library
+        guard let fragmentFunction = library!.makeFunction(name: parameters.function) else {
+            throw MetalEffectsErrorType.makeFunctionFailed(parameters.function)
+        }
+        
+        return try RenderPipeline(device: device, fragmentFunction: fragmentFunction, textures: parameters.textures)
+    }
+    
     static func create(device: MTLDevice, library: MTLLibrary! = RenderHelper.library, function: FragmentFunction, textures: [MTLTexture] = []) throws -> RenderPipeline {
         guard let fragmentFunction = library.makeFunction(name: function.rawValue) else {
             throw MetalEffectsErrorType.makeFunctionFailed(function.rawValue)

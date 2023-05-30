@@ -12,13 +12,13 @@ public struct MetalEffectView<Content: View>: View {
     
     @ObservedObject private var imageRenderer: ImageRenderer<Content>
     
-    public init(_ function: FragmentFunction, @ViewBuilder content: () -> Content) {
+    public init(_ effectParameters: EffectParameters, @ViewBuilder content: () -> Content) {
         let imageRenderer = ImageRenderer(content: content())
         imageRenderer.scale = 3
         self.imageRenderer = imageRenderer
 
         do {
-            helper = try RenderHelper(function: function)
+            helper = try RenderHelper(parameters: effectParameters)
         } catch {
             print(error.localizedDescription)
             helper = nil
@@ -56,49 +56,27 @@ public struct MetalEffectView<Content: View>: View {
 struct MetalEffectsView_Previews: PreviewProvider {
     struct ExampleView: View {
         var body: some View {
-            ZStack {
-                Rectangle().fill(.blue.gradient)
-                
-                Text("Rendered in metal")
-                    .font(.title.bold())
-                    .foregroundColor(.white)
+            VStack {
+                Text("TEXT")
+                Text("TO")
+                Text("DISSOLVE")
             }
+            .font(.largeTitle.bold())
+            .foregroundColor(.white)
             .frame(width: 200, height: 200)
         }
     }
     
-    
     static var previews: some View {
         Grid(horizontalSpacing: 0, verticalSpacing: 0) {
             GridRow {
-                MetalEffectView(.water_fragment) {
-                    ExampleView()
-                }
+                ExampleView()
+                    .dissolve(.noise)
+                    .frame(width: 200, height: 200)
                 
-                MetalEffectView(.flame_fragment) {
-                    ExampleView()
-                }
-            }
-            GridRow {
-                MetalEffectView(.linear_dissolve) {
-                    VStack {
-                        Text("TEXT")
-                        Text("TO")
-                        Text("DISSOLVE")
-                    }
-                    .font(.largeTitle.bold())
-                    .foregroundColor(.white)
-                }
-                
-                MetalEffectView(.noise_dissolve) {
-                    VStack {
-                        Text("TEXT")
-                        Text("TO")
-                        Text("DISSOLVE")
-                    }
-                    .font(.largeTitle.bold())
-                    .foregroundColor(.white)
-                }
+                ExampleView()
+                    .dissolve(.linear)
+                    .frame(width: 200, height: 200)
             }
         }
         .background(.black)
