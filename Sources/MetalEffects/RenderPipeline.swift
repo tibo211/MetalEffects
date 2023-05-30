@@ -14,6 +14,7 @@ public enum FragmentFunction: String {
     case distorted_fade
     case wave_fragment
     case linear_dissolve
+    case noise_dissolve
 }
 
 struct FragmentParams {
@@ -25,8 +26,9 @@ class RenderPipeline {
     private let vertexBuffer: MTLBuffer
     private let initialTime = CFAbsoluteTimeGetCurrent()
     private let name: String
+    private let textures: [MTLTexture] = []
 
-    init(device: MTLDevice, fragmentFunction: MTLFunction) throws {
+    init(device: MTLDevice, fragmentFunction: MTLFunction, textures: [MTLTexture]) throws {
         name = fragmentFunction.name
         
         // Create pipeline state.
@@ -41,23 +43,28 @@ class RenderPipeline {
         vertexBuffer = try device.quadVertexBuffer()
     }
     
-    static func create(device: MTLDevice, library: MTLLibrary! = RenderHelper.library, function: FragmentFunction) throws -> RenderPipeline {
+    static func create(device: MTLDevice, library: MTLLibrary! = RenderHelper.library, function: FragmentFunction, textures: [MTLTexture] = []) throws -> RenderPipeline {
         
         guard let fragmentFunction = library.makeFunction(name: function.rawValue) else {
             throw MetalEffectsErrorType.makeFunctionFailed(function.rawValue)
         }
         
-        return try RenderPipeline(device: device, fragmentFunction: fragmentFunction)
+        return try RenderPipeline(device: device, fragmentFunction: fragmentFunction, textures: textures)
     }
     
     func encode(with encoder: MTLRenderCommandEncoder, texture: MTLTexture) {
         encoder.pushDebugGroup(name)
         encoder.setRenderPipelineState(pipelineState)
         encoder.setVertexBuffer(vertexBuffer, offset: 0, index: 0)
+        
+        // Set textures for fragment shader.
         encoder.setFragmentTexture(texture, index: 0)
+        for i in 0 ..< textures.count {
+            encoder.setFragmentTexture(textures[i], index: i + 1)
+        }
         
+        // Set fragment shader parameters.
         var params = FragmentParams(time: Float(CFAbsoluteTimeGetCurrent() - initialTime))
-        
         encoder.setFragmentBytes(&params, length: MemoryLayout<FragmentParams>.stride, index: 0)
         encoder.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: 6)
         encoder.popDebugGroup()
