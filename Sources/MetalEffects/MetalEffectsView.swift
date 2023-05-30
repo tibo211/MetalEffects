@@ -90,8 +90,14 @@ struct MetalEffectsView_Previews: PreviewProvider {
                     .foregroundColor(.white)
                 }
                 
-                MetalEffectView(.wave_fragment) {
-                    ExampleView()
+                MetalEffectView(.noise_dissolve) {
+                    VStack {
+                        Text("TEXT")
+                        Text("TO")
+                        Text("DISSOLVE")
+                    }
+                    .font(.largeTitle.bold())
+                    .foregroundColor(.white)
                 }
             }
         }

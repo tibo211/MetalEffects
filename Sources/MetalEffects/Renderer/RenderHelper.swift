@@ -66,7 +66,16 @@ final class RenderHelper {
         
         self.commandQueue = commandQueue
         
-        renderPipeline = try .create(device: RenderHelper.device, function: function)
+        if function == .noise_dissolve {
+            let url = Bundle.module.url(forResource: "noise", withExtension: "png")!
+            let texture = try MTKTextureLoader(device: RenderHelper.device)
+                .newTexture(URL: url)
+            
+            renderPipeline = try .create(device: RenderHelper.device, function: function, textures: [texture])
+        } else {
+            renderPipeline = try .create(device: RenderHelper.device, function: function)
+        }
+        
     }
     
     func updateTexture(from image: CGImage) throws {

@@ -24,6 +24,7 @@ let package = Package(
             name: "MetalEffects",
             dependencies: [],
             resources: [
+                .process("Shaders/fragment_type.h"),
                 .process("Resources/noise.png")
             ]),
         .testTarget(

@@ -26,7 +26,7 @@ class RenderPipeline {
     private let vertexBuffer: MTLBuffer
     private let initialTime = CFAbsoluteTimeGetCurrent()
     private let name: String
-    private let textures: [MTLTexture] = []
+    private let textures: [MTLTexture]
 
     init(device: MTLDevice, fragmentFunction: MTLFunction, textures: [MTLTexture]) throws {
         name = fragmentFunction.name
@@ -41,10 +41,10 @@ class RenderPipeline {
             .makeRenderPipelineState(descriptor: pipelineDescriptor)
 
         vertexBuffer = try device.quadVertexBuffer()
+        self.textures = textures
     }
     
     static func create(device: MTLDevice, library: MTLLibrary! = RenderHelper.library, function: FragmentFunction, textures: [MTLTexture] = []) throws -> RenderPipeline {
-        
         guard let fragmentFunction = library.makeFunction(name: function.rawValue) else {
             throw MetalEffectsErrorType.makeFunctionFailed(function.rawValue)
         }
