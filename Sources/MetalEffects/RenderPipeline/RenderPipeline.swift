@@ -24,9 +24,9 @@ struct FragmentParams {
 class RenderPipeline {
     private let pipelineState: MTLRenderPipelineState
     private let vertexBuffer: MTLBuffer
-    private let initialTime = CFAbsoluteTimeGetCurrent()
     private let name: String
     private let textures: [MTLTexture]
+    var animation: EffectAnimation
 
     init(device: MTLDevice, fragmentFunction: MTLFunction, textures: [MTLTexture]) throws {
         name = fragmentFunction.name
@@ -36,12 +36,12 @@ class RenderPipeline {
         pipelineDescriptor.colorAttachments[0].pixelFormat = .bgra8Unorm
         pipelineDescriptor.vertexFunction = RenderHelper.vertexFunction
         pipelineDescriptor.fragmentFunction = fragmentFunction
-        
         pipelineState = try device
             .makeRenderPipelineState(descriptor: pipelineDescriptor)
 
         vertexBuffer = try device.quadVertexBuffer()
         self.textures = textures
+        animation = ContinuousEffectAnimation()
     }
     
     static func create(device: MTLDevice, parameters: EffectParameters) throws -> RenderPipeline {
@@ -51,14 +51,6 @@ class RenderPipeline {
         }
         
         return try RenderPipeline(device: device, fragmentFunction: fragmentFunction, textures: parameters.textures)
-    }
-    
-    static func create(device: MTLDevice, library: MTLLibrary! = RenderHelper.library, function: FragmentFunction, textures: [MTLTexture] = []) throws -> RenderPipeline {
-        guard let fragmentFunction = library.makeFunction(name: function.rawValue) else {
-            throw MetalEffectsErrorType.makeFunctionFailed(function.rawValue)
-        }
-        
-        return try RenderPipeline(device: device, fragmentFunction: fragmentFunction, textures: textures)
     }
     
     func encode(with encoder: MTLRenderCommandEncoder, texture: MTLTexture) {
@@ -73,7 +65,7 @@ class RenderPipeline {
         }
         
         // Set fragment shader parameters.
-        var params = FragmentParams(time: Float(CFAbsoluteTimeGetCurrent() - initialTime))
+        var params = FragmentParams(time: animation.time)
         encoder.setFragmentBytes(&params, length: MemoryLayout<FragmentParams>.stride, index: 0)
         encoder.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: 6)
         encoder.popDebugGroup()

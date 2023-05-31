@@ -11,6 +11,7 @@ public struct MetalEffectView<Content: View>: View {
     let helper: RenderHelper?
     
     @ObservedObject private var imageRenderer: ImageRenderer<Content>
+    @Environment(\.effectAnimation) private var animation
     
     public init(_ effectParameters: EffectParameters, @ViewBuilder content: () -> Content) {
         let imageRenderer = ImageRenderer(content: content())
@@ -39,6 +40,9 @@ public struct MetalEffectView<Content: View>: View {
         }
         .onReceive(imageRenderer.objectWillChange) {
             renderImage()
+        }
+        .onAppear {
+            helper?.renderPipeline.animation = animation
         }
     }
     
