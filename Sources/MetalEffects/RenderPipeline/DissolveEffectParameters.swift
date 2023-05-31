@@ -53,8 +53,8 @@ public extension View {
         .effectAnimation(target: value)
     }
     
-    func dissolve(isOn: Bool, type: DissolveType) -> some View {
-        dissolve(value: isOn ? 1 : 0)
+    func dissolve(isOn: Bool, type: DissolveType = .noise) -> some View {
+        dissolve(value: isOn ? 1 : 0, type: type)
     }
 }
 

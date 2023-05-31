@@ -14,7 +14,7 @@ constant float EDGE_WIDTH = 0.02;
 constexpr sampler textureSampler;
 
 fragment float4 linear_dissolve(constant FragmentParams &params [[buffer(0)]], VertexOut in [[stage_in]], texture2d<float> texture_in [[texture(0)]]) {
-    float dissolve = fract(params.time / 3);
+    float dissolve = params.time;
     
     float alpha = 1;
     if (dissolve > in.uv.y) {

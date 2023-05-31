@@ -81,11 +81,11 @@ struct MetalEffectsView_Previews: PreviewProvider {
                 Grid(horizontalSpacing: 0, verticalSpacing: 0) {
                     GridRow {
                         ExampleView()
-                            .dissolve(isOn: toggle, type: .noise)
+                            .dissolve(isOn: toggle)
                             .frame(width: 200, height: 200)
                         
                         ExampleView()
-                            .dissolve(value: 1, type: .linear)
+                            .dissolve(isOn: toggle, type: .linear)
                             .frame(width: 200, height: 200)
                             
                     }
