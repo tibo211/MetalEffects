@@ -70,19 +70,33 @@ struct MetalEffectsView_Previews: PreviewProvider {
             .frame(width: 200, height: 200)
         }
     }
+
+    struct PreviewView: View {
+        @State var toggle = false
+        
+        var body: some View {
+            Grid(horizontalSpacing: 0, verticalSpacing: 0) {
+                GridRow {
+                    Button {
+                        toggle.toggle()
+                    } label: {
+                        ExampleView()
+                            .dissolve(isOn: toggle, type: .noise)
+                            .frame(width: 200, height: 200)
+                    }
+                    .buttonStyle(.plain)
+                    
+                    ExampleView()
+                        .dissolve(value: 1, type: .linear)
+                        .frame(width: 200, height: 200)
+                        
+                }
+            }
+            .background(.black)
+        }
+    }
     
     static var previews: some View {
-        Grid(horizontalSpacing: 0, verticalSpacing: 0) {
-            GridRow {
-                ExampleView()
-                    .dissolve(.noise)
-                    .frame(width: 200, height: 200)
-                
-                ExampleView()
-                    .dissolve(.linear)
-                    .frame(width: 200, height: 200)
-            }
-        }
-        .background(.black)
+        PreviewView()
     }
 }

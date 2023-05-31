@@ -14,7 +14,7 @@ constant float EDGE_WIDTH = 0.02;
 constexpr sampler textureSampler;
 
 fragment float4 noise_dissolve(constant FragmentParams &params [[buffer(0)]], VertexOut in [[stage_in]], texture2d<float> texture_in [[texture(0)]], texture2d<float> noise_texture [[texture(1)]]) {
-    float dissolve = fract(params.time / 3);
+    float dissolve = params.time;
     
     float dissolveValue = noise_texture.sample(textureSampler, in.uv).r * 2;
     

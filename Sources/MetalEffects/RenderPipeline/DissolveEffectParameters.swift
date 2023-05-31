@@ -46,10 +46,15 @@ struct DissolveEffectParameters: EffectParameters {
 // MARK: - Dissolve view modifier.
 
 public extension View {
-    func dissolve(_ type: DissolveType = .noise) -> some View {
+    func dissolve(value: Double, type: DissolveType = .noise) -> some View {
         MetalEffectView(DissolveEffectParameters(type: type)) {
             self
         }
+        .effectAnimation(target: value)
+    }
+    
+    func dissolve(isOn: Bool, type: DissolveType) -> some View {
+        dissolve(value: isOn ? 1 : 0)
     }
 }
 
@@ -60,7 +65,7 @@ struct DissolveEffectParameters_Previews: PreviewProvider {
             .font(.largeTitle.bold())
             .foregroundColor(.white)
             .padding()
-            .dissolve(.noise)
+            .dissolve(value: 1)
             .background(.black)
     }
 }
