@@ -72,20 +72,20 @@ struct MetalEffectsView_Previews: PreviewProvider {
     }
 
     struct PreviewView: View {
-        @State var toggle = false
+        @State var value = 0.0
         
         var body: some View {
             VStack {
-                Toggle("Dissolve", isOn: $toggle)
+                Slider(value: $value)
                 
                 Grid(horizontalSpacing: 0, verticalSpacing: 0) {
                     GridRow {
                         ExampleView()
-                            .dissolve(isOn: toggle)
+                            .dissolve(value: value)
                             .frame(width: 200, height: 200)
                         
                         ExampleView()
-                            .dissolve(isOn: toggle, type: .linear)
+                            .dissolve(value: value, type: .linear)
                             .frame(width: 200, height: 200)
                             
                     }
