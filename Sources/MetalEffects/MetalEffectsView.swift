@@ -75,24 +75,24 @@ struct MetalEffectsView_Previews: PreviewProvider {
         @State var toggle = false
         
         var body: some View {
-            Grid(horizontalSpacing: 0, verticalSpacing: 0) {
-                GridRow {
-                    Button {
-                        toggle.toggle()
-                    } label: {
+            VStack {
+                Toggle("Dissolve", isOn: $toggle)
+                
+                Grid(horizontalSpacing: 0, verticalSpacing: 0) {
+                    GridRow {
                         ExampleView()
                             .dissolve(isOn: toggle, type: .noise)
                             .frame(width: 200, height: 200)
-                    }
-                    .buttonStyle(.plain)
-                    
-                    ExampleView()
-                        .dissolve(value: 1, type: .linear)
-                        .frame(width: 200, height: 200)
                         
+                        ExampleView()
+                            .dissolve(value: 1, type: .linear)
+                            .frame(width: 200, height: 200)
+                            
+                    }
                 }
+                .background(.black)
             }
-            .background(.black)
+            .padding()
         }
     }
     
