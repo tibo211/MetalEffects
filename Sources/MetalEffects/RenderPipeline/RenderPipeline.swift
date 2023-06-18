@@ -53,15 +53,20 @@ class RenderPipeline {
         return try RenderPipeline(device: device, fragmentFunction: fragmentFunction, textures: parameters.textures)
     }
     
-    func encode(with encoder: MTLRenderCommandEncoder, texture: MTLTexture) {
+    func encode(with encoder: MTLRenderCommandEncoder, texture: MTLTexture?) {
         encoder.pushDebugGroup(name)
         encoder.setRenderPipelineState(pipelineState)
         encoder.setVertexBuffer(vertexBuffer, offset: 0, index: 0)
         
         // Set textures for fragment shader.
-        encoder.setFragmentTexture(texture, index: 0)
-        for i in 0 ..< textures.count {
-            encoder.setFragmentTexture(textures[i], index: i + 1)
+        var textureIndex = 0
+        if let texture {
+            encoder.setFragmentTexture(texture, index: textureIndex)
+            textureIndex += 1
+        }
+        for texture in textures {
+            encoder.setFragmentTexture(texture, index: textureIndex)
+            textureIndex += 1
         }
         
         // Set fragment shader parameters.

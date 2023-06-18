@@ -19,13 +19,13 @@ class EffectRenderer: NSObject, MTKViewDelegate {
     }
 
     func draw(in view: MTKView) {
-        guard let baseTexture = renderHelper.texture,
-              let commandBuffer = renderHelper.commandQueue.makeCommandBuffer(),
+        guard let commandBuffer = renderHelper.commandQueue.makeCommandBuffer(),
               let renderPassDescriptor = view.currentRenderPassDescriptor,
               let encoder = commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor) else {
             return
         }
-        renderHelper.renderPipeline.encode(with: encoder, texture: baseTexture)
+        renderHelper.renderPipeline.encode(with: encoder,
+                                           texture: renderHelper.texture)
         
         encoder.endEncoding()
         

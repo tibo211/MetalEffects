@@ -31,7 +31,7 @@ public struct MetalEffectView<Content: View>: View {
     public var body: some View {
         Group {
             if let helper, let size = helper.size {
-                MetalView(renderHelper: helper)
+                MetalViewRepresentable(renderHelper: helper)
                     .frame(width: size.width,
                            height: size.height)
             } else {

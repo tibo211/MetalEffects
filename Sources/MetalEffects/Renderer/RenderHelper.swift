@@ -50,6 +50,30 @@ final class RenderHelper {
     var device: MTLDevice { RenderHelper.device }
     
     init(parameters: EffectParameters) throws {
+        try RenderHelper.setupDevice()
+        
+        guard let commandQueue = RenderHelper.device.makeCommandQueue() else {
+            throw MetalEffectsErrorType.makeCommandQueueFailed
+        }
+        self.commandQueue = commandQueue
+        
+        renderPipeline = try .create(device: RenderHelper.device, parameters: parameters)
+    }
+    
+    init(function: MTLFunction) throws {
+        try RenderHelper.setupDevice()
+        
+        guard let commandQueue = RenderHelper.device.makeCommandQueue() else {
+            throw MetalEffectsErrorType.makeCommandQueueFailed
+        }
+        self.commandQueue = commandQueue
+        
+        renderPipeline = try RenderPipeline(device: RenderHelper.device,
+                                            fragmentFunction: function,
+                                            textures: [])
+    }
+    
+    static func setupDevice() throws {
         if RenderHelper.device == nil {
             guard let device = MTLCreateSystemDefaultDevice() else {
                 throw MetalEffectsErrorType.createDeviceFailed
@@ -58,14 +82,6 @@ final class RenderHelper {
             RenderHelper.library = try device.makeDefaultLibrary(bundle: .module)
             RenderHelper.vertexFunction = RenderHelper.library.makeFunction(name: "vertex_main")
         }
-        
-        guard let commandQueue = RenderHelper.device.makeCommandQueue() else {
-            throw MetalEffectsErrorType.makeCommandQueueFailed
-        }
-        
-        self.commandQueue = commandQueue
-        
-        renderPipeline = try .create(device: RenderHelper.device, parameters: parameters)
     }
     
     func updateTexture(from image: CGImage) throws {

@@ -2,53 +2,48 @@
 //  MetalView.swift
 //  
 //
-//  Created by Tibor Felföldy on 2023-05-26.
+//  Created by Tibor Felföldy on 2023-06-18.
 //
 
 import SwiftUI
-import MetalKit
 
-extension MTKView {
-    static func make(renderer: EffectRenderer) -> MTKView {
-        let view = MTKView()
-        view.device = renderer.renderHelper.device
-        view.delegate = renderer
-        view.clearColor = MTLClearColor(red: 1, green: 0, blue: 1, alpha: 1)
-        view.preferredFramesPerSecond = 60
-        view.framebufferOnly = true
-        view.isPaused = false
-        view.layer?.isOpaque = false
-        view.enableSetNeedsDisplay = true
-        return view
+struct MetalView: View {
+    let renderHelper: RenderHelper?
+    
+    init(function: MTLFunction) {
+        do {
+            renderHelper = try RenderHelper(function: function)
+        } catch {
+            print(error.localizedDescription)
+            renderHelper = nil
+        }
+    }
+    
+    var body: some View {
+        if let renderHelper {
+            MetalViewRepresentable(renderHelper: renderHelper)
+        }
     }
 }
 
-#if os(macOS)
-struct MetalView: NSViewRepresentable {
-    let renderHelper: RenderHelper
-    
-    func makeNSView(context: Context) -> MTKView {
-        .make(renderer: context.coordinator)
+
+struct MetalView_Previews: PreviewProvider {
+    struct PreviewView: View {
+        var function: MTLFunction! {
+            try! RenderHelper.setupDevice()
+            return RenderHelper.library.makeFunction(name: "water_fragment")
+        }
+        
+        var body: some View {
+            if let function {
+                MetalView(function: function)
+                    .background(.blue)
+                    .frame(width: 200, height: 200)
+            }
+        }
     }
     
-    func updateNSView(_ nsView: MTKView, context: Context) {}
-    
-    func makeCoordinator() -> EffectRenderer {
-        EffectRenderer(helper: renderHelper)
-    }
-}
-#else
-struct MetalView: UIViewRepresentable {
-    let renderHelper: RenderHelper
-    
-    func makeUIView(context: Context) -> MTKView {
-        .make(renderer: context.coordinator)
-    }
-    
-    func updateUIView(_ view: MTKView, context: Context) {}
-    
-    func makeCoordinator() -> EffectRenderer {
-        EffectRenderer(helper: renderHelper)
+    static var previews: some View {
+        PreviewView()
     }
 }
-#endif
