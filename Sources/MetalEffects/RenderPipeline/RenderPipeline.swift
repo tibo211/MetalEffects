@@ -44,13 +44,8 @@ class RenderPipeline {
         animation = ContinuousEffectAnimation()
     }
     
-    static func create(device: MTLDevice, parameters: EffectParameters) throws -> RenderPipeline {
-        let library = parameters.library ?? RenderHelper.library
-        guard let fragmentFunction = library!.makeFunction(name: parameters.function) else {
-            throw MetalEffectsErrorType.makeFunctionFailed(parameters.function)
-        }
-        
-        return try RenderPipeline(device: device, fragmentFunction: fragmentFunction, textures: parameters.textures)
+    static func create(device: MTLDevice, parameters: MetalParameters) throws -> RenderPipeline {
+        return try RenderPipeline(device: device, fragmentFunction: parameters.function, textures: parameters.textures)
     }
     
     func encode(with encoder: MTLRenderCommandEncoder, texture: MTLTexture?) {

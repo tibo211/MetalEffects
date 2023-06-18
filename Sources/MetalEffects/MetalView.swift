@@ -7,10 +7,10 @@
 
 import SwiftUI
 
-struct MetalView: View {
+public struct MetalView: View {
     let renderHelper: RenderHelper?
     
-    init(function: MTLFunction) {
+    public init(function: MTLFunction) {
         do {
             renderHelper = try RenderHelper(function: function)
         } catch {
@@ -19,7 +19,7 @@ struct MetalView: View {
         }
     }
     
-    var body: some View {
+    public var body: some View {
         if let renderHelper {
             MetalViewRepresentable(renderHelper: renderHelper)
         }

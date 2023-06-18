@@ -49,7 +49,7 @@ final class RenderHelper {
     
     var device: MTLDevice { RenderHelper.device }
     
-    init(parameters: EffectParameters) throws {
+    init(parameters: MetalParameters) throws {
         try RenderHelper.setupDevice()
         
         guard let commandQueue = RenderHelper.device.makeCommandQueue() else {

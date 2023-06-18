@@ -13,7 +13,7 @@ public struct MetalEffectView<Content: View>: View {
     @ObservedObject private var imageRenderer: ImageRenderer<Content>
     @Environment(\.effectAnimation) private var animation
     
-    public init(_ effectParameters: EffectParameters, @ViewBuilder content: () -> Content) {
+    public init(_ effectParameters: MetalParameters, @ViewBuilder content: () -> Content) {
         let imageRenderer = ImageRenderer(content: content())
         imageRenderer.scale = 3
         self.imageRenderer = imageRenderer

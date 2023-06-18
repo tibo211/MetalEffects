@@ -13,19 +13,23 @@ public enum DissolveType {
     case noise
 }
 
-struct DissolveEffectParameters: EffectParameters {
-    let library: MTLLibrary? = nil
-    let function: String
+struct DissolveEffectParameters: MetalParameters {
+    let function: MTLFunction
     let textures: [MTLTexture]
     
-    init(type: DissolveType) {
-        function = {
+    init(type: DissolveType) throws {
+        let functionName = {
             switch type {
             case .noise:
                 return "noise_dissolve"
             case .linear:
                 return "linear_dissolve"
             }
+        }()
+        
+        function = try {
+            try RenderHelper.setupDevice()
+            return RenderHelper.library.makeFunction(name: functionName)!
         }()
         
         textures = {
@@ -46,11 +50,15 @@ struct DissolveEffectParameters: EffectParameters {
 // MARK: - Dissolve view modifier.
 
 public extension View {
-    func dissolve(value: Double, type: DissolveType = .noise) -> some View {
-        MetalEffectView(DissolveEffectParameters(type: type)) {
+    @ViewBuilder func dissolve(value: Double, type: DissolveType = .noise) -> some View {
+        if let parameters = try? DissolveEffectParameters(type: type) {
+            MetalEffectView(parameters) {
+                self
+            }
+            .effectAnimation(target: value)
+        } else {
             self
         }
-        .effectAnimation(target: value)
     }
     
     func dissolve(isOn: Bool, type: DissolveType = .noise) -> some View {
