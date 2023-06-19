@@ -17,20 +17,21 @@ struct DissolveEffectParameters: MetalParameters {
     let function: MTLFunction
     let textures: [MTLTexture]
     
-    init(type: DissolveType) throws {
+    init?(type: DissolveType) {
         let functionName = {
             switch type {
             case .noise:
-                return "noise_dissolve"
+                return FunctionName.noise_dissolve
             case .linear:
-                return "linear_dissolve"
+                return FunctionName.linear_dissolve
             }
         }()
         
-        function = try {
-            try RenderHelper.setupDevice()
-            return RenderHelper.library.makeFunction(name: functionName)!
-        }()
+        guard let function = Library.load(function: functionName) else {
+            return nil
+        }
+        
+        self.function = function
         
         textures = {
             switch type {
@@ -51,7 +52,7 @@ struct DissolveEffectParameters: MetalParameters {
 
 public extension View {
     @ViewBuilder func dissolve(value: Double, type: DissolveType = .noise) -> some View {
-        if let parameters = try? DissolveEffectParameters(type: type) {
+        if let parameters = DissolveEffectParameters(type: type) {
             MetalEffectView(parameters) {
                 self
             }
